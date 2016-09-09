@@ -15,6 +15,12 @@
     ((null node) nil)
     (t (append (solution (get-parent node)) `(,(get-move node))))))
 
+(defun filter (nodes visited)
+  (cond
+    ((or (null nodes) (null visited)) nodes)
+    ((member (get-state (car nodes)) visited :test #'equal) (filter (cdr nodes) visited))
+    (t (cons (car nodes) (filter (cdr nodes) visited)))))
+
 (defun successors (node)
   (let ((new-state nil)
         (new-nodes nil)
@@ -28,8 +34,7 @@
 (defun solve (state)
   (let ((frontier `((,state ,nil ,nil ,(manhattan state)))) 
         (visited nil)
-        (node nil)
-        (children nil))
+        (node nil))
     (loop
       (if (null frontier)
         (return-from solve nil))
@@ -37,7 +42,6 @@
       (if (equal (get-state node) goal)
         (return-from solve (remove nil (solution node))))
       (push (get-state node) visited)
-      (setf children (remove nil (successors node)))
-      (setf children (set-difference children visited))
-      (setf frontier (append frontier children))
-      (setf frontier (sort frontier (lambda (node1 node2) (< (get-heuristic node1) (get-heuristic node2))))))))
+      (setf frontier (append frontier (filter (successors node) visited)))
+      (setf frontier (sort frontier (lambda (node1 node2)
+        (< (get-heuristic node1) (get-heuristic node2))))))))
