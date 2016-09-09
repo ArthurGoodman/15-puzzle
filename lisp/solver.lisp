@@ -15,18 +15,6 @@
     ((null node) nil)
     (t (append (solution (get-parent node)) `(,(get-move node))))))
 
-(defun filter (lst1 lst2)
-  (cond
-    ((or (null lst1) (null lst2)) lst1)
-    ((member-state (get-state (car lst1)) lst2) (filter (cdr lst1) lst2))
-    (t (cons (car lst1) (filter (cdr lst1) lst2)))))
-
-(defun member-state (state nodes)
-  (cond
-    ((null nodes) nil)
-    ((equal (get-state (car nodes)) state) nodes)
-    (t (member-state state (cdr nodes)))))
-
 (defun successors (node)
   (let ((new-state nil)
         (new-nodes nil)
@@ -39,7 +27,7 @@
 
 (defun solve (state)
   (let ((frontier `((,state ,nil ,nil ,(manhattan state)))) 
-        (used nil)
+        (visited nil)
         (node nil)
         (children nil))
     (loop
@@ -48,8 +36,8 @@
       (setf node (pop frontier))
       (if (equal (get-state node) goal)
         (return-from solve (remove nil (solution node))))
-      (push node used)
+      (push (get-state node) visited)
       (setf children (remove nil (successors node)))
-      (setf children (filter children used))
+      (setf children (set-difference children visited))
       (setf frontier (append frontier children))
       (setf frontier (sort frontier (lambda (node1 node2) (< (get-heuristic node1) (get-heuristic node2))))))))
