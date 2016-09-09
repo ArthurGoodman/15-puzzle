@@ -1,7 +1,14 @@
-(defun get-state (node) (first node))
-(defun get-move (node) (second node))
-(defun get-parent (node) (third node))
-(defun get-heuristic (node) (fourth node))
+(defun get-state (node)
+  (first node))
+
+(defun get-move (node)
+  (second node))
+
+(defun get-parent (node)
+  (third node))
+
+(defun get-heuristic (node)
+  (fourth node))
 
 (defun solution (node)
   (cond
