@@ -1,5 +1,6 @@
 (load "utility.lisp")
 (load "puzzle.lisp")
+(load "moves.lisp")
 (load "heuristic.lisp")
 (load "solver.lisp")
 
