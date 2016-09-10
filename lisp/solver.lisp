@@ -15,6 +15,17 @@
     ((null node) nil)
     (t (append (solution (get-parent node)) `(,(get-move node))))))
 
+(defun print-state (state)
+  (write (reverse (cdr (reverse state))))
+  (terpri))
+
+(defun trace-solution (start solution)
+  (let ((s (grid-to-state start)))
+    (loop for move in solution do
+      (print-state s)
+      (setf s (make-move s move)))
+    (print-state s)))
+
 (defun filter (nodes visited)
   (cond
     ((or (null nodes) (null visited)) nodes)
@@ -31,10 +42,12 @@
         (setf new-nodes (append new-nodes `((,new-state ,move ,node ,(manhattan new-state)))))))
     new-nodes))
 
-(defun solve (state)
-  (let ((frontier `((,state ,nil ,nil ,(manhattan state)))) 
+(defun solve (grid)
+  (let ((state (grid-to-state grid))
+        (frontier nil)
         (visited nil)
         (node nil))
+    (setf frontier `((,state ,nil ,nil ,(manhattan state))))
     (loop
       (if (null frontier)
         (return-from solve nil))

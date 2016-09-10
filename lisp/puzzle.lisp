@@ -32,3 +32,12 @@
     ((null state) nil)
     ((find value (car state)) 0)
     (t (+ (get-y (cdr state) value) 1))))
+
+(defun find-zero (grid)
+  (dotimes (x 4)
+    (dotimes (y 4)
+      (if (eq (get-tile grid x y) 0)
+        (return-from find-zero `(,x ,y))))))
+
+(defun grid-to-state (grid)
+  (append grid `(,(find-zero grid))))
