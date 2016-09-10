@@ -10,5 +10,6 @@
 
 (defun main ()
   ; (write (solve grid))
+  ; (terpri)
   (trace-solution grid (solve grid))
-  (terpri))
+  t)
