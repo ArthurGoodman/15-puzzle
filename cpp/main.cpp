@@ -286,7 +286,8 @@ std::vector<std::pair<int, int>> solve(const Grid &grid) {
 int main() {
     srand(time(0));
 
-    Grid grid({14, 6, 9, 2, 10, 4, 13, 3, 1, 7, 0, 12, 5, 15, 11, 8});
+    //Grid grid({14, 6, 9, 2, 10, 4, 13, 3, 1, 7, 0, 12, 5, 15, 11, 8});
+    Grid grid({1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 10, 0, 12, 13, 14, 15});
 
     const std::vector<std::pair<int, int>> &moves = solve(grid);
 

@@ -1,16 +1,16 @@
 (defvar goal '((1 2 3 4) (5 6 7 8) (9 10 11 12) (13 14 15 0) (3 3)))
 
 (defun get-0-x (state)
-  (car (get-element state (- (length state) 1))))
+  (car (get-element state 4)))
 
 (defun get-0-y (state)
-  (cadr (get-element state (- (length state) 1))))
+  (cadr (get-element state 4)))
 
 (defun set-0-x (state value)
-  (set-element state (- (length state) 1) (set-element (get-element state (- (length state) 1)) 0 value))) 
+  (set-element state 4 (set-element (get-element state 4) 0 value))) 
 
 (defun set-0-y (state value)
-  (set-element state (- (length state) 1) (set-element (get-element state (- (length state) 1)) 1 value))) 
+  (set-element state 4 (set-element (get-element state 4) 1 value))) 
 
 (defun get-tile (grid x y)
   (cond
