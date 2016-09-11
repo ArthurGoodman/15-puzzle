@@ -1,5 +1,3 @@
-(load "params.lisp")
-
 (defun get-state (node)
   (first node))
 
