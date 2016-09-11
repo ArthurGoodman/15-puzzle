@@ -1,3 +1,5 @@
+(load "params.lisp")
+
 (defun get-state (node)
   (first node))
 
@@ -10,21 +12,26 @@
 (defun get-heuristic (node)
   (fourth node))
 
+(defun get-counter (node)
+  (fifth node))
+
 (defun solution (node)
   (cond
     ((null node) nil)
     (t (append (solution (get-parent node)) `(,(get-move node))))))
 
 (defun print-state (state)
-  (write (reverse (cdr (reverse state))))
-  (terpri))
+  (write (reverse (cdr (reverse state)))))
 
-(defun trace-solution (start solution)
-  (let ((s (grid-to-state start)))
+(defun trace-solution (grid solution)
+  (if verbose
+    (terpri))
+  (let ((state (grid-to-state grid)))
     (loop for move in solution do
-      (print-state s)
-      (setf s (make-move s move)))
-    (print-state s)))
+      (print-state state)
+      (terpri)
+      (setf state (make-move state move)))
+    (print-state state)))
 
 (defun filter (nodes visited)
   (cond
@@ -32,14 +39,18 @@
     ((member (get-state (car nodes)) visited :test #'equal) (filter (cdr nodes) visited))
     (t (cons (car nodes) (filter (cdr nodes) visited)))))
 
+(defun shuffle (data)
+  (sort (copy-list data) (lambda (a b) (if (eq (random 2) 0) t nil))))
+
 (defun successors (node)
   (let ((new-state nil)
         (new-nodes nil)
-        (state (get-state node)))
-    (loop for move in move-symbols do
+        (state (get-state node))
+        (counter (+ (get-counter node) 1)))
+    (loop for move in (shuffle move-symbols) do
       (setf new-state (make-move state move))
       (if new-state
-        (setf new-nodes (append new-nodes `((,new-state ,move ,node ,(manhattan new-state)))))))
+        (setf new-nodes (append new-nodes `((,new-state ,move ,node ,(+ (manhattan new-state) (if use-counter counter 0)) ,counter))))))
     new-nodes))
 
 (defun solve (grid)
@@ -47,11 +58,15 @@
         (frontier nil)
         (visited nil)
         (node nil))
-    (setf frontier `((,state ,nil ,nil ,(manhattan state))))
+    (setf frontier `((,state ,nil ,nil ,(manhattan state) ,0)))
     (loop
       (if (null frontier)
         (return-from solve nil))
       (setf node (pop frontier))
+      (cond (verbose
+        (print-state (get-state node))
+        (format t " ~a" (get-heuristic node))
+        (terpri)))
       (if (equal (get-state node) goal)
         (return-from solve (remove nil (solution node))))
       (push (get-state node) visited)
