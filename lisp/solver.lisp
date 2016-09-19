@@ -21,6 +21,14 @@
 (defun print-state (state)
   (write (reverse (cdr (reverse state)))))
 
+(defun pretty-print-state (state)
+  (let ((grid (reverse (cdr (reverse state)))))
+    (loop for row in grid do
+      (print row))))
+
+(defun cls()
+  (format t "~A[H~@*~A[J" #\escape))
+
 (defun trace-solution (grid solution)
   (if verbose
     (terpri))
@@ -30,6 +38,19 @@
       (terpri)
       (setf state (make-move state move)))
     (print-state state)))
+
+(defun interactive-trace-solution (grid solution)
+  (if verbose
+    (terpri))
+  (cls)
+  (let ((state (grid-to-state grid)))
+    (loop for move in solution do
+      (pretty-print-state state)
+      (terpri)
+      (cls)
+      (read-char)
+      (setf state (make-move state move)))
+    (pretty-print-state state)))
 
 (defun filter (nodes visited)
   (cond
